@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoGame - Jogo de Plantio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2A7F62;
+      --secondary: #3AAE84;
+      --accent: #FFD166;
+      --dark: #1A3A32;
+      --light: #F7F9F8;
+      --text: #333333;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #e8f5e9;
+      color: var(--text);
+    }
+    
+    header {
+      background-color: var(--dark);
+      color: white;
+      padding: 1rem 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+    }
+    
+    .logo span {
+      color: var(--accent);
+    }
+    
+    #jogo {
+      padding: 2rem 0;
+      text-align: center;
+    }
+    
+    .game-title {
+      color: var(--primary);
+      margin-bottom: 1rem;
+      font-size: 2.5rem;
+    }
+    
+    .game-description {
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+    
+    .game-info {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 800px;
+      background-color: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .score-box, .energy-box, .multiplier-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: bold;
+    }
+    
+    .score-box {
+      color: var(--primary);
+    }
+    
+    .energy-box {
+      color: var(--accent);
+    }
+    
+    .multiplier-box {
+      color: #9c27b0;
+    }
+    
+    .game-board {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      height: 500px;
+      background-color: #a5d6a7;
+      border: 3px solid var(--primary);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    
+    .plant-area {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background-color: rgba(139, 195, 74, 0.3);
+      border: 2px dashed var(--primary);
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    
+    .plant-area:hover {
+      background-color: rgba(139, 195, 74, 0.5);
+    }
+    
+    .tree {
+      font-size: 3rem;
+      color: var(--primary);
+      position: absolute;
+      bottom: 10px;
+      animation: grow 1s ease-out;
+    }
+    
+    .trash {
+      font-size: 2rem;
+      color: #5d4037;
+      position: absolute;
+      cursor: pointer;
+      animation: appear 0.5s ease-out;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-plant {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-clean {
+      background-color: var(--accent);
+      color: var(--dark);
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .game-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 10;
+      text-align: center;
+      display: none;
+    }
+    
+    .feedback {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-weight: bold;
+      color: var(--primary);
+      animation: floatUp 1s ease-out forwards;
+      z-index: 5;
+    }
+    
+    .power-up {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      color: gold;
+      cursor: pointer;
+      animation: spin 2s linear infinite;
+      z-index: 4;
+    }
+    
+    #leaderboard {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      z-index: 100;
+      max-width: 90%;
+      width: 400px;
+      display: none;
+    }
+    
+    #leaderboard ol {
+      padding-left: 20px;
+    }
+    
+    #leaderboard li {
+      margin-bottom: 0.5rem;
+      padding: 0.3rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    @keyframes grow {
+      0% { transform: scale(0); }
+      80% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes appear {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translate(-50%, -50%); }
+      100% { opacity: 0; transform: translate(-50%, -150%); }
+    }
+    
+    @keyframes spin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+    
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      margin-top: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+      .game-board {
+        height: 400px;
+      }
+      
+      .plant-area {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .game-info {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="logo">Eco<span>Game</span></a>
+        <nav>
+          <a href="index.html">Voltar</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="jogo">
+      <h1 class="game-title">Jogo de Reflorestamento</h1>
+      <p class="game-description">
+        Plante árvores nas áreas marcadas para ganhar pontos! Cuidado com o lixo que aparece - 
+        você precisa removê-lo antes de plantar, mas isso custa energia. Cada árvore plantada 
+        recupera um pouco da sua energia! Conquiste multiplicadores e power-ups para aumentar sua pontuação!
+      </p>
+      
+      <div class="game-container">
+        <div class="game-info">
+          <div class="score-box">
+            <i class="fas fa-leaf"></i>
+            <span>Pontos: <span id="score">0</span></span>
+          </div>
+          <div class="energy-box">
+            <i class="fas fa-bolt"></i>
+            <span>Energia: <span id="energy">100</span>%</span>
+          </div>
+          <div class="multiplier-box">
+            <i class="fas fa-times"></i>
+            <span>Multiplicador: <span id="multiplier">1</span>x</span>
+          </div>
+        </div>
+        
+        <div class="game-board" id="gameBoard">
+          <!-- Áreas de plantio serão adicionadas dinamicamente -->
+          <div class="game-message" id="gameMessage">
+            <h2 id="messageTitle">Parabéns!</h2>
+            <p id="messageText">Você plantou todas as árvores!</p>
+            <button class="btn btn-plant" id="restartBtn">Jogar Novamente</button>
+            <button class="btn btn-clean" id="leaderboardBtn">Ver Ranking</button>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="btn btn-plant" id="plantBtn" disabled>
+            <i class="fas fa-seedling"></i> Plantar Árvore (10 energia)
+          </button>
+          <button class="btn btn-clean" id="cleanBtn" disabled>
+            <i class="fas fa-trash-alt"></i> Limpar Lixo (20 energia)
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="leaderboard"></div>
+
+  <footer>
+    <div class="container">
+      <p>© 2023 EcoGame - Todos os direitos reservados</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Elementos do jogo
+      const gameBoard = document.getElementById('gameBoard');
+      const scoreElement = document.getElementById('score');
+      const energyElement = document.getElementById('energy');
+      const multiplierElement = document.getElementById('multiplier');
+      const plantBtn = document.getElementById('plantBtn');
+      const cleanBtn = document.getElementById('cleanBtn');
+      const gameMessage = document.getElementById('gameMessage');
+      const messageTitle = document.getElementById('messageTitle');
+      const messageText = document.getElementById('messageText');
+      const restartBtn = document.getElementById('restartBtn');
+      const leaderboardBtn = document.getElementById('leaderboardBtn');
+      const leaderboardDiv = document.getElementById('leaderboard');
+      
+      // Variáveis do jogo
+      let score = 0;
+      let highScore = localStorage.getItem('highScore') || 0;
+      let multiplier = 1;
+      let streak = 0;
+      let energy = 100;
+      let selectedArea = null;
+      let trashItems = [];
+      let plantedTrees = 0;
+      let difficulty = 1;
+      let gameStartTime = Date.now();
+      const totalAreas = 5;
+      
+      // Criar áreas de plantio
+      function createPlantAreas() {
+        const positions = [
+          { top: '20%', left: '15%' },
+          { top: '60%', left: '15%' },
+          { top: '20%', left: '50%', transform: 'translateX(-50%)' },
+          { top: '60%', left: '50%', transform: 'translateX(-50%)' },
+          { top: '40%', left: '85%', transform: 'translateX(-100%)' }
+        ];
+        
+        positions.forEach((pos, index) => {
+          const area = document.createElement('div');
+          area.className = 'plant-area';
+          area.id = `area-${index}`;
+          area.style.top = pos.top;
+          area.style.left = pos.left;
+          if (pos.transform) area.style.transform = pos.transform;
+          
+          area.addEventListener('click', function() {
+            selectArea(this);
+          });
+          
+          gameBoard.appendChild(area);
+        });
+      }
+      
+      // Selecionar área para ação
+      function selectArea(area) {
+        // Desselecionar área anterior
+        if (selectedArea) {
+          selectedArea.style.borderColor = 'var(--primary)';
+        }
+        
+        selectedArea = area;
+        selectedArea.style.borderColor = 'var(--accent)';
+        
+        // Verificar se tem lixo na área
+        const hasTrash = trashItems.some(trash => trash.areaId === area.id);
+        const hasPowerUp = area.querySelector('.power-up');
+        
+        // Ativar botões conforme a situação
+        plantBtn.disabled = energy < 10 || hasTrash || area.querySelector('.tree');
+        cleanBtn.disabled = energy < 20 || !hasTrash;
+        
+        // Se tiver power-up, focar nele
+        if (hasPowerUp) {
+          const powerUp = area.querySelector('.power-up');
+          powerUp.style.transform = 'translate(-50%, -50%) scale(1.2)';
+          setTimeout(() => {
+            if (powerUp) powerUp.style.transform = 'translate(-50%, -50%) scale(1)';
+          }, 200);
+        }
+      }
+      
+      // Plantar árvore
+      plantBtn.addEventListener('click', function() {
+        if (!selectedArea || selectedArea.querySelector('.tree') || energy < 10) return;
+        
+        // Verificar se tem lixo (não deveria ter, mas só por garantia)
+        const trashInArea = trashItems.find(trash => trash.areaId === selectedArea.id);
+        if (trashInArea) return;
+        
+        // Gastar energia
+        energy -= 10;
+        updateEnergy();
+        
+        // Tipos de árvores com valores diferentes
+        const treeTypes = [
+          { icon: 'fa-tree', points: 50 },
+          { icon: 'fa-apple-alt', points: 75 },
+          { icon: 'fa-pagelines', points: 60 }
+        ];
+        
+        const selectedTree = treeTypes[Math.floor(Math.random() * treeTypes.length)];
+        
+        // Criar árvore
+        const tree = document.createElement('div');
+        tree.className = 'tree';
+        tree.innerHTML = `<i class="fas ${selectedTree.icon}"></i>`;
+        selectedArea.appendChild(tree);
+        
+        // Cálculo de pontos melhorado
+        const basePoints = selectedTree.points;
+        const timeBonus = Math.max(0, 100 - Math.floor((Date.now() - gameStartTime) / 1000)); // Bônus por velocidade
+        const totalPoints = Math.floor((basePoints + timeBonus) * multiplier);
+        
+        score += totalPoints;
+        streak++;
+        
+        // Aumentar multiplicador após 3 ações consecutivas
+        if (streak >= 3) {
+          multiplier = Math.min(multiplier + 0.5, 5);
+          showFeedback("Multiplicador x" + multiplier, selectedArea);
+          updateMultiplier();
+        }
+        
+        updateScore();
+        
+        // Recuperar um pouco de energia
+        energy = Math.min(energy + 5, 100);
+        updateEnergy();
+        
+        plantedTrees++;
+        checkGameWin();
+        
+        // Desabilitar botão de plantar nesta área
+        plantBtn.disabled = true;
+      });
+      
+      // Limpar lixo
+      cleanBtn.addEventListener('click', function() {
+        if (!selectedArea || energy < 20) return;
+        
+        // Encontrar o lixo nesta área
+        const trashIndex = trashItems.findIndex(trash => trash.areaId === selectedArea.id);
+        if (trashIndex === -1) return;
+        
+        // Gastar energia
+        energy -= 20;
+        updateEnergy();
+        
+        // Remover lixo visualmente e do array
+        const trashElement = trashItems[trashIndex].element;
+        trashElement.remove();
+        trashItems.splice(trashIndex, 1);
+        
+        // Ganhar alguns pontos por limpeza
+        score += 20;
+        streak = 0; // Resetar sequência
+        updateScore();
+        
+        // Atualizar botões
+        cleanBtn.disabled = true;
+        if (!selectedArea.querySelector('.tree')) {
+          plantBtn.disabled = energy < 10;
+        }
+      });
+      
+      // Gerar lixo aleatório
+      function generateTrash() {
+        // Aumentar dificuldade com o tempo
+        difficulty = 1 + Math.floor((Date.now() - gameStartTime) / 30000); // Aumenta a cada 30 segundos
+        
+        if (trashItems.length >= 2 + difficulty) return;
+        
+        const areas = document.querySelectorAll('.plant-area');
+        const emptyAreas = Array.from(areas).filter(area => 
+          !area.querySelector('.tree') && 
+          !trashItems.some(trash => trash.areaId === area.id) &&
+          !area.querySelector('.power-up')
+        );
+        
+        if (emptyAreas.length === 0) return;
+        
+        const randomArea = emptyAreas[Math.floor(Math.random() * emptyAreas.length)];
+        
+        const trash = document.createElement('div');
+        trash.className = 'trash';
+        trash.innerHTML = '<i class="fas fa-trash"></i>';
+        
+        // Posicionar lixo aleatoriamente dentro da área
+        const areaRect = randomArea.getBoundingClientRect();
+        const maxLeft = areaRect.width - 30;
+        const maxTop = areaRect.height - 30;
+        
+        trash.style.left = `${10 + Math.random() * maxLeft}px`;
+        trash.style.top = `${10 + Math.random() * maxTop}px`;
+        
+        // Adicionar animação especial para lixo em dificuldade alta
+        if (difficulty > 3) {
+          trash.style.animation = 'pulse 1s infinite alternate';
+        }
+        
+        randomArea.appendChild(trash);
+        
+        trashItems.push({
+          element: trash,
+          areaId: randomArea.id
+        });
+        
+        // Se esta área estiver selecionada, atualizar botões
+        if (selectedArea && selectedArea.id === randomArea.id) {
+          cleanBtn.disabled = energy < 20;
+          plantBtn.disabled = true;
+        }
+      }
+      
+      // Gerar power-ups
+      function generatePowerUp() {
+        if (Math.random() > 0.9) return; // 10% de chance de aparecer
+        
+        const areas = document.querySelectorAll('.plant-area');
+        const emptyAreas = Array.from(areas).filter(area => 
+          !area.querySelector('.tree') && 
+          !area.querySelector('.power-up') &&
+          !trashItems.some(trash => trash.areaId === area.id)
+        );
+        
+        if (emptyAreas.length === 0) return;
+        
+        const randomArea = emptyAreas[Math.floor(Math.random() * emptyAreas.length)];
+        
+        const powerUp = document.createElement('div');
+        powerUp.className = 'power-up';
+        powerUp.innerHTML = '<i class="fas fa-star"></i>';
+        randomArea.appendChild(powerUp);
+        
+        powerUp.addEventListener('click', function() {
+          // Efeitos aleatórios
+          const effects = [
+            { energy: 30, text: '+30 Energia!' },
+            { multiplier: 0.5, text: 'Multiplicador +0.5!' },
+            { score: 100, text: '+100 Pontos!' }
+          ];
+          
+          const effect = effects[Math.floor(Math.random() * effects.length)];
+          
+          if (effect.energy) {
+            energy = Math.min(energy + effect.energy, 100);
+            updateEnergy();
+          }
+          
+          if (effect.multiplier) {
+            multiplier += effect.multiplier;
+            updateMultiplier();
+            showFeedback(`Multiplicador x${multiplier}`, randomArea);
+          }
+          
+          if (effect.score) {
+            score += effect.score;
+            updateScore();
+          }
+          
+          showFeedback(effect.text, randomArea);
+          powerUp.remove();
+        });
+      }
+      
+      // Mostrar feedback visual
+      function showFeedback(text, element) {
+        const feedback = document.createElement('div');
+        feedback.className = 'feedback';
+        feedback.textContent = text;
+        element.appendChild(feedback);
+        
+        setTimeout(() => {
+          feedback.remove();
+        }, 1000);
+      }
+      
+      // Atualizar pontuação
+      function updateScore() {
+        scoreElement.textContent = score;
+      }
+      
+      // Atualizar energia
+      function updateEnergy() {
+        energyElement.textContent = energy;
+        
+        // Atualizar estado dos botões
+        if (selectedArea) {
+          const hasTrash = trashItems.some(trash => trash.areaId === selectedArea.id);
+          const hasTree = selectedArea.querySelector('.tree');
+          
+          plantBtn.disabled = energy < 10 || hasTrash || hasTree;
+          cleanBtn.disabled = energy < 20 || !hasTrash;
+        }
+      }
+      
+      // Atualizar multiplicador
+      function updateMultiplier() {
+        multiplierElement.textContent = multiplier;
+      }
+      
+      // Verificar vitória
+      function checkGameWin() {
+        if (plantedTrees >= totalAreas) {
+          if (score > highScore) {
+            localStorage.setItem('highScore', score);
+            showMessage('Novo Recorde!', `Você reflorestou toda a área com ${score} pontos!`);
+          } else {
+            showMessage('Parabéns!', `Você reflorestou toda a área com ${score} pontos! Seu recorde é ${highScore}.`);
+          }
+          updateLeaderboard();
+        }
+      }
+      
+      // Mostrar mensagem
+      function showMessage(title, text) {
+        messageTitle.textContent = title;
+        messageText.textContent = text;
+        gameMessage.style.display = 'block';
+      }
+      
+      // Atualizar ranking
+      function updateLeaderboard() {
+        const leaderboard = JSON.parse(localStorage.getItem('ecoGameLeaderboard')) || [];
+        leaderboard.push({
+          name: 'Jogador ' + Math.floor(Math.random() * 1000),
+          score: score,
+          date: new Date().toLocaleDateString()
+        });
+        
+        // Ordenar por pontuação (melhores primeiro)
+        leaderboard.sort((a, b) => b.score - a.score);
+        
+        // Manter apenas os top 10
+        if (leaderboard.length > 10) {
+          leaderboard.length = 10;
+        }
+        
+        localStorage.setItem('ecoGameLeaderboard', JSON.stringify(leaderboard));
+      }
+      
+      // Mostrar ranking
+      function showLeaderboard() {
+        const leaderboard = JSON.parse(localStorage.getItem('ecoGameLeaderboard')) || [];
+        let html = '<h3>Top 10 Jogadores</h3><ol>';
+        
+        leaderboard.forEach((player, index) => {
+          html += `<li>${player.name} - ${player.score} pts (${player.date})</li>`;
+        });
+        
+        html += '</ol><button class="btn btn-plant" id="closeLeaderboard">Fechar</button>';
+        
+        leaderboardDiv.innerHTML = html;
+        leaderboardDiv.style.display = 'block';
+        
+        document.getElementById('closeLeaderboard').addEventListener('click', function() {
+          leaderboardDiv.style.display = 'none';
+        });
+      }
+      
+      // Reiniciar jogo
+      restartBtn.addEventListener('click', function() {
+        // Resetar variáveis
+        score = 0;
+        energy = 100;
+        multiplier = 1;
+        streak = 0;
+        plantedTrees = 0;
+        trashItems = [];
+        selectedArea = null;
+        difficulty = 1;
+        gameStartTime = Date.now();
+        
+        // Atualizar display
+        updateScore();
+        updateEnergy();
+        updateMultiplier();
+        gameMessage.style.display = 'none';
+        leaderboardDiv.style.display = 'none';
+        
+        // Limpar tabuleiro
+        document.querySelectorAll('.plant-area').forEach(area => {
+          area.innerHTML = '';
+          area.style.borderColor = 'var(--primary)';
+        });
+        
+        // Recriar áreas (para garantir que os eventos estão corretos)
+        gameBoard.querySelectorAll('.plant-area').forEach(area => area.remove());
+        createPlantAreas();
+        
+        // Resetar botões
+        plantBtn.disabled = true;
+        cleanBtn.disabled = true;
+      });
+      
+      // Mostrar ranking
+      leaderboardBtn.addEventListener('click', showLeaderboard);
+      
+      // Iniciar jogo
+      createPlantAreas();
+      updateMultiplier();
+      
+      // Gerar lixo periodicamente
+      setInterval(generateTrash, 5000);
+      
+      // Gerar power-ups periodicamente
+      setInterval(generatePowerUp, 15000);
+      
+      // Diminuir energia com o tempo
+      setInterval(function() {
+        if (energy > 0 && plantedTrees < totalAreas) {
+          energy = Math.max(energy - 1, 0);
+          updateEnergy();
+          
+          if (energy === 0) {
+            showMessage('Game Over', 'Sua energia acabou! Recarregue plantando mais árvores.');
+          }
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

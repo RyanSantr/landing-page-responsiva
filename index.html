@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoVision - Monitoramento e Reflorestamento</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto+Slab:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2A7F62;
+      --secondary: #3AAE84;
+      --accent: #FFD166;
+      --dark: #1A3A32;
+      --light: #F7F9F8;
+      --text: #333333;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background-color: var(--light);
+    }
+    
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('imagens/floresta-hero.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      padding: 0 20px;
+    }
+    
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      font-family: 'Roboto Slab', serif;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin-bottom: 30px;
+    }
+    
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--dark);
+      padding: 12px 30px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      background-color: rgba(26, 58, 50, 0.9);
+      padding: 15px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      font-family: 'Roboto Slab', serif;
+    }
+    
+    .logo span {
+      color: var(--accent);
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+    
+    nav ul li {
+      margin-left: 30px;
+    }
+    
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    
+    nav ul li a:hover {
+      color: var(--accent);
+    }
+    
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      bottom: -5px;
+      left: 0;
+      transition: width 0.3s ease;
+    }
+    
+    nav ul li a:hover::after {
+      width: 100%;
+    }
+    
+    section {
+      padding: 80px 0;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+      color: var(--dark);
+      font-size: 2.5rem;
+      font-family: 'Roboto Slab', serif;
+    }
+    
+    .about-content {
+      display: flex;
+      align-items: center;
+      gap: 50px;
+    }
+    
+    .about-text {
+      flex: 1;
+    }
+    
+    .about-text h2 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
+    
+    .about-image {
+      flex: 1;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .about-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    
+    .about-image:hover img {
+      transform: scale(1.05);
+    }
+    
+    .features {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    
+    .feature-card {
+      background: rgba(255,255,255,0.1);
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-10px);
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+    
+    .feature-card h3 {
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+    }
+    
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 50px 0 20px;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    
+    .footer-column h3 {
+      color: var(--accent);
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .social-links a {
+      color: white;
+      font-size: 1.2rem;
+      transition: color 0.3s ease;
+    }
+    
+    .social-links a:hover {
+      color: var(--accent);
+    }
+    
+    .copyright {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .about-content {
+        flex-direction: column;
+      }
+      
+      nav ul {
+        display: none;
+      }
+    }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    width: 80%;
+    max-width: 700px;
+    font-family: 'Montserrat', sans-serif;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  .close {
+    color: var(--text);
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover {
+    color: var(--accent);
+  }
+
+
+  .zoom-img {
+    width: 30%;
+    height: 50px;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: transform 0.3s ease;
+  }
+
+  .zoom-img:hover {
+    transform: scale(1.02);
+  }
+
+  .img-text-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.85);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .img-text-content {
+    background-color: white;
+    max-width: 900px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 15px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .img-text-content img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+
+  .img-text-content h3 {
+    font-size: 1.8rem;
+    color: var(--primary);
+  }
+
+  .img-text-content p {
+    font-size: 1rem;
+    color: var(--text);
+    text-align: center;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    color: #333;
+    cursor: pointer;
+  }
+
+  .modal-close:hover {
+    color: var(--accent);
+  }
+
+  .image-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.image-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.image-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.card-text {
+  padding: 20px;
+  text-align: center;
+}
+
+.card-text h3 {
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+.card-text p {
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px 0;
+}
+
+.image-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  width: 300px;
+  flex: 0 1 300px;
+}
+
+.image-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.image-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.card-text {
+  padding: 20px;
+  text-align: center;
+}
+
+.card-text h3 {
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+.card-text p {
+  color: var(--text);
+  font-size: 0.95rem;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 30px;
+  border: 2px solid var(--primary);
+  border-radius: 10px;
+  width: 80%;
+  max-width: 700px;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="logo">Eco<span>Vision</span></a>
+        <nav>
+          <ul>
+            <li><a href="index.html" class="active">Início</a></li>
+            <li><a href="monitoramento.html">Monitoramento</a></li>
+            <li><a href="jogo.html">Jogo Educativo</a></li>
+            <li><a href="#contato">Contato</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Tecnologia a Serviço da Natureza</h1>
+    <p>Monitoramento por satélite e ações de reflorestamento para preservar nosso planeta para as futuras gerações</p>
+    <a href="#sobre" class="btn">Conheça Nosso Trabalho</a>
+  </section>
+<section id="monitoramento" class="container">
+  <h2 class="section-title">Como Funciona o Monitoramento via Satélite</h2>
+  <section id="monitoramento" class="container">
+  <div class="card-container">
+    <div class="image-card" onclick="abrirModal('<h3>📡 Sensoriamento Remoto e Satélites</h3><p>Satélites usam sensores ópticos, infravermelhos e de radar (SAR) para detectar mudanças ambientais, como desmatamento e queimadas. Com a altimetria, é possível medir a topografia e o nível de rios e lagos.</p>')">
+      <img src="https://engenharia360.com/wp-content/uploads/2015/07/Imagem-reproduzida-de-Adenilson-Giovanini.jpg" alt="Sensoriamento Satelital">
+      <div class="card-text">
+        <h3>Sensoriamento</h3>
+        <p>Monitoramento com sensores e altimetria.</p>
+      </div>
+    </div>
+
+    <div class="image-card" onclick="abrirModal('<h3>🛰️ Tecnologias Utilizadas</h3><p>CubeSats, sensores hiperespectrais e IA embarcada otimizam o monitoramento ambiental.</p><ul><li><strong>CubeSats</strong>: mini satélites de alta frequência de captura</li><li><strong>Sensores Hiperespectrais</strong>: detectam saúde da vegetação e poluentes</li><li><strong>IA embarcada</strong>: algoritmos detectam desmatamento em tempo real</li></ul>')">
+      <img src="https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2020/07/seosat-ingenio/22147736-3-eng-GB/SEOSAT-Ingenio_pillars.jpg" alt="Tecnologias de Satélite">
+      <div class="card-text">
+        <h3>Tecnologia</h3>
+        <p>CubeSats, IA embarcada, sensores ambientais.</p>
+      </div>
+    </div>
+
+    <div class="image-card" onclick="abrirModal('<h3>📈 Dados e Indicadores</h3><p>Mais de 300 bilhões de previsões meteorológicas por ano são geradas com dados de satélites. Nossa plataforma processa esses dados para fornecer:</p><ul><li>Alertas de desmatamento em tempo quase real</li><li>Monitoramento de biodiversidade</li><li>Previsão de riscos ambientais</li></ul>')">
+      <img src="https://geosemfronteiras.org/wp-content/uploads/2023/03/Copia-de-Design-sem-nome-29-1024x597.jpg" alt="Indicadores e dados climáticos">
+      <div class="card-text">
+        <h3>Indicadores</h3>
+        <p>Previsões e análises em escala global.</p>
+      </div>
+    </div>
+
+   <div class="image-card" onclick="abrirModal('<h3>🌳 Aplicações Ambientais</h3><p>Detecção de áreas desmatadas, mapeamento de queimadas e suporte ao reflorestamento.</p><ul><li>Detectar áreas desmatadas com precisão</li><li>Mapear queimadas e degradação florestal</li><li>Guiar ações de reflorestamento em tempo real</li></ul><a href=&quot;https://terrabrasilis.dpi.inpe.br/queimadas/bdqueimadas/&quot; class=&quot;btn&quot; target=&quot;_blank&quot; style=&quot;display:inline-block;margin-top:15px;&quot;>Ver dados no INPE</a>')">
+
+
+      <img src="https://geoinova.com.br/wp-content/uploads/2024/06/16-ALTERAO-REFLORESTAMENTO-2-1.gif" alt="Aplicações ambientais">
+      <div class="card-text">
+        <h3>Ambiental</h3>
+        <p>Reflorestamento e controle de queimadas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <section id="sobre" class="container">
+    <div class="about-content">
+      <div class="about-text">
+        <h2>Sobre o Projeto</h2>
+        <p>O EcoVision é um trabalho de extensão da Faculdade em crescimento, com a base de monitoramento via satelite sendo feita, para fins educativos, simulados e informativos..</p>
+        <a href="monitoramento.html" class="btn">Ver Dados de Monitoramento</a>
+      </div>
+      <div class="about-image">
+        <img src="https://tse4.mm.bing.net/th/id/OIP.89sTMS5386lu54Fry5l4twAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Monitoramento por satélite">
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <h2 class="section-title">Nossas Soluções</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-satellite"></i>
+          </div>
+          <h3>Monitoramento</h3>
+          <p>Tecnologia de satélite para acompanhamento em tempo real das áreas florestais e detecção de desmatamento.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-tree"></i>
+          </div>
+          <h3>Reflorestamento</h3>
+          <p>Ações diretas de plantio em áreas críticas identificadas através do nosso sistema de monitoramento.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-gamepad"></i>
+          </div>
+          <h3>Educação Ambiental</h3>
+          <p>Jogo interativo que ensina sobre a importância da preservação e como cada um pode contribuir.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contato">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>EcoVision</h3>
+          <p>Tecnologia e inovação para um futuro sustentável. Juntos podemos fazer a diferença pelo nosso planeta.</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h3>Links Rápidos</h3>
+          <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="monitoramento.html">Monitoramento</a></li>
+            <li><a href="jogo.html">Jogo Educativo</a></li>
+            <li><a href="#contato">Contato</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Contato</h3>
+          <p><i class="fas fa-envelope"></i> contato@ecovision.com</p>
+          <p><i class="fas fa-phone"></i> (11) 98765-4321</p>
+          <p><i class="fas fa-map-marker-alt"></i> São Paulo, Brasil</p>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2023 EcoVision. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Estrutura -->
+<div id="modalInfo" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="fecharModal()">&times;</span>
+    <div id="modalTexto"></div>
+  </div>
+</div>
+
+<script>
+  function abrirModal(texto) {
+    document.getElementById("modalTexto").innerHTML = texto;
+    document.getElementById("modalInfo").style.display = "block";
+  }
+
+  function fecharModal() {
+    document.getElementById("modalInfo").style.display = "none";
+  }
+
+  window.onclick = function(event) {
+    if (event.target == document.getElementById("modalInfo")) {
+      fecharModal();
+    }
+  }
+</script>
+
+</body>
+</html>
